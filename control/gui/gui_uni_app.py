@@ -2,7 +2,7 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from control.gui.student_contrul import show_operation_menu
+from control.gui.student_control import show_operation_menu
 from service.student_service import StudentService
 from service.subject_service import SubjectService
 
