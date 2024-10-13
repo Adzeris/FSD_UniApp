@@ -1,0 +1,38 @@
+{
+    "students": [
+        {
+            "id": "615789",
+            "name": "tony",
+            "email": "tony@uni.com",
+            "password": "ddc5f5e86d2f85e1b1ff763aff13ce0a",
+            "category": null
+        }
+    ],
+    "admins": [],
+    "subjects": [
+        {
+            "student_id": "615789",
+            "subject_id": "279",
+            "mark": 56,
+            "grade": "P"
+        },
+        {
+            "student_id": "615789",
+            "subject_id": "257",
+            "mark": 66,
+            "grade": "C"
+        },
+        {
+            "student_id": "615789",
+            "subject_id": "109",
+            "mark": 92,
+            "grade": "HZ"
+        },
+        {
+            "student_id": "615789",
+            "subject_id": "042",
+            "mark": 90,
+            "grade": "HZ"
+        }
+    ]
+}
