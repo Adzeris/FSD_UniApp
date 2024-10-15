@@ -16,7 +16,7 @@ def show_operation_menu(root, student_service, subject_service):
     tk.Label(root, text="Welcome! Student Course Menu").pack(pady=(10, 5))
 
     button_frame = tk.Frame(root)
-    button_frame.pack(pady=5)  # 在框架和顶部留出一些空间
+    button_frame.pack(pady=5)  # Leave some space on the frame and top
 
     button1 = tk.Button(button_frame, text="Change Password",
                         command=lambda: show_change_password_menu(root, student_service, subject_service))
