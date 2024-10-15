@@ -1,36 +1,44 @@
 from control.cli.admin_control import AdminControl
 from control.cli.student_control import StudentControl
-from util.constant import Constant
-from util.print_util import PrintUtil
+from util.util import input_cyan
+
+
+# control/cli/cli_uni_app.py
+
+def main():
+    print("UniApp is running!")
+
+if __name__ == "__main__":
+    main()
 
 
 class CLIUniApp:
     """
     University System CLIApp control entrance
     """
-
     def __init__(self):
         self._admin_control = AdminControl()
         self._student_control = StudentControl()
 
     def show_uni_menu(self) -> None:
         """
+        # TODO add exception handling process
         show University System Menu
         :return: None
         """
         while True:
-            option = str(PrintUtil.input_cyan("University System: (A)dmin, (S)tudent, or X : ")).lower()
+            option = str(input_cyan("University System: (A)dmin, (S)tudent, or X : ")).upper()
 
             # show admin menu
-            if option == Constant.ADMIN:
+            if option == 'A':
                 self._admin_control.show_admin_main_menu()
 
             # show student menu
-            elif option == Constant.STUDENT:
+            elif option == 'S':
                 self._student_control.show_student_main_menu()
 
             # exit the system
-            elif option == Constant.EXIT:
+            elif option == 'X':
                 print("Thank You")
                 break
 
