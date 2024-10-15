@@ -11,119 +11,126 @@ from util.serialization import Serialization
 
 class SubjectService:
     """
-    define basic student method, including:
+    Defines basic student methods, including:
 
     Fields:
-        _subject_dao refers to the subject data access, it provides CRUD operations with Subject enrollment information
+        _subject_dao: refers to the subject data access, providing CRUD operations with Subject enrollment information.
 
     Methods:
-        _init:              public default constructor, init _subject_dao object
+        __init__:              Public default constructor; initializes _subject_dao object.
 
-        enroll_subject      public method for enrollment student's subject
-        remove subject      public method for removing one student's subject
-        show_subjects       public method for show all subjects enrolled.
+        enroll_subject:        Public method for enrolling a student's subject.
+        remove_subject:        Public method for removing one student's subject.
+        query_subjects:       Public method for showing all subjects enrolled.
     """
 
     def __init__(self):
+        # Initializes the SubjectDao for database operations and sets the student to None.
         self._subject_dao = SubjectDao()
         self._student = None
 
     def set_student(self, student: Student | None):
+        # Sets the current student for enrollment operations.
         self._student = student
 
     def get_student(self) -> Student:
+        # Returns the currently set student.
         return self._student
 
     def enroll_subject(self) -> dict[Constant, str | int]:
         """
-        enroll subject
-        1. system generate subject id automatically.
-        2. after enrollment, system assigns a mark and grade automatically.
-        :return: two key-value pairs, simulate return value for front page to display
+        Enrolls a subject.
+        1. System generates subject ID automatically.
+        2. After enrollment, system assigns a mark and grade automatically.
+        :return: Two key-value pairs simulating return values for the front page display.
                  1. subject_id = xxxx
                  2. enrolled_amount = xxx
         """
-        # 1: raise exception if student isn't in logging state.
+        # 1: Raise exception if student isn't logged in.
         if not self._student:
             raise BusinessException("Please login in first.")
 
-        # 2: check total amount of enrolled subjects
+        # 2: Check total number of enrolled subjects.
         count = self._subject_dao.query_subject_count_by_student_id(self.get_student().get_student_id())
         if count >= 4:
-            raise BusinessException("Student are allowed to enroll in 4 subjects only.")
+            raise BusinessException("Students are allowed to enroll in 4 subjects only.")
 
-        # 2: generate a subject id, that is a 3-digit number
+        # 3: Generate a subject ID, which is a 3-digit number.
         subject_id = self.simulate_select_subject()
 
-        # 3: saving subject to database
+        # 4: Save subject to database.
         subject = Subject(self._student.get_student_id(), subject_id)
         self._subject_dao.add_subject(subject)
 
-        # 4: randomly generate a mark to this subject
+        # 5: Randomly generate a mark for this subject.
         self._assign_mark_grade(subject)
 
-        # 5: encapsulate key-value pairs
+        # 6: Encapsulate key-value pairs for return.
         return {Constant.KEY_SUBJECT_ID: subject_id, Constant.KEY_COUNT: count + 1}
 
     def remove_subject(self, subject_id) -> dict[Constant, str | int]:
         """
-        delete a specific subject enrollment of a particular student.
-        :param subject_id:
+        Deletes a specific subject enrollment of a particular student.
+        :param subject_id: The ID of the subject to remove.
         """
 
-        # 1: raise exception if student isn't in logging state.
+        # 1: Raise exception if student isn't logged in.
         if not self._student:
             raise BusinessException("Please login in first.")
 
-        # 2: check whether such subject exists.
+        # 2: Check whether the subject exists.
         subject = self._subject_dao.query_subject_by_student_and_subject(self.get_student().get_student_id(),
                                                                          subject_id)
         if not subject:
             raise BusinessException("Subject-" + subject_id + " does not exist.")
 
-        # 3: delete from database
+        # 3: Delete the subject from the database.
         self._subject_dao.delete_subject_by_student_and_subject(self.get_student().get_student_id(), subject_id)
 
-        # 4: encapsulate result
+        # 4: Encapsulate result for return.
         count = self._subject_dao.query_subject_count_by_student_id(self._student.get_student_id())
         return {Constant.KEY_SUBJECT_ID: subject_id, Constant.KEY_COUNT: count}
 
     def query_subjects(self) -> List[Subject]:
         """
-        query all subjects of a particular student
-        :return: List[Subject]
+        Queries all subjects of a particular student.
+        :return: List[Subject] - list of subjects.
         """
-        # 1: raise exception if student isn't in logging state.
+        # 1: Raise exception if student isn't logged in.
         if not self._student:
             raise BusinessException("Please login in first.")
-        # 2: query subjects from database.
+
+        # 2: Query subjects from the database.
         subjects = self._subject_dao.query_subject_list_by_student_id(self.get_student().get_student_id())
         return subjects if subjects else []
 
     def _assign_mark_grade(self, subject: Subject):
         """
-        generate a mark and assign it to subject
-        :param subject:
+        Generates a mark and assigns it to the subject.
+        :param subject: The subject to which the mark and grade will be assigned.
         """
-        # 1: generate a random mark
+        # 1: Generate a random mark.
         mark = random.randint(25, 100)
 
-        # 2: assign mark to subject
+        # 2: Assign mark to the subject.
         subject.set_subject_mark(mark)
 
-        # 3: get grade based on mark
-        # mark < 50         -> Z;
-        # 50 <= mark < 65   -> P;
-        # 65 <= mark < 75   -> C;
-        # 75 <= mark < 85   -> D;
-        # mark >= 85        -> HD
+        # 3: Get grade based on mark.
+        # Assigns grades based on defined mark ranges.
         grade = "HZ" if mark >= 85 else ("D" if mark >= 75 else ("C" if mark >= 65 else ("P" if mark >= 50 else "Z")))
         subject.set_subject_grade(grade)
+
+        # 4: Update the subject in the database.
         self._subject_dao.update_subject(subject)
 
     def simulate_select_subject(self) -> str:
+        """
+        Simulates the selection of a subject ID that is not already taken by the student.
+        :return: A unique subject ID as a string.
+        """
         subject_id = Serialization.generate_random_subject_id()
         while True:
+            # Ensure the generated subject ID is not already taken by the student.
             if not self._subject_dao.query_subject_by_student_and_subject(self.get_student().get_student_id(),
                                                                           subject_id):
                 break
