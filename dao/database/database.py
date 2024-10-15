@@ -53,7 +53,7 @@ class Database:
         # project root path
         project_root = os.path.abspath(os.path.join(current_dir, '..'))
         # data file path
-        self._data_file_path = os.path.join(project_root, 'file', 'student.data')
+        self._data_file_path = os.path.join(project_root, 'unidemo', 'student.data')
 
         # init file
         self._init_file()
@@ -133,6 +133,11 @@ class Database:
             self._students = [Student.from_dict(student) for student in data.get('students', [])]
             self._admins = [Admin.from_dict(admin) for admin in data.get('admins', [])]
             self._subjects = [Subject.from_dict(subject) for subject in data.get('subjects', [])]
+        else:
+            self._students = []
+            self._admins = []
+            self._subjects = []
+
 
     def _overwrite_data(self):
         # overwrite all data to student.data file
