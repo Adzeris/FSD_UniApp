@@ -10,26 +10,28 @@ class Database:
     """
     this is a simulation of database basis operations that include query from file and write data to file.
     Fields:
-        _students       student array
-        _subjects       subject enrollment array
-        _admin          admin array
-        _data_file_path database file
+        _students           student array
+        _subjects           subject enrollment array
+        _data_file_path     database file
     Methods:
-        __init__: default constructor that init 3 attributes for objects storage:
-            _students, _admins, _subjects
-            **Note**:   @_init_file() should be called to physically init a file in disk.
+        __init__:       default constructor that init 3 attributes for objects storage:
+                        _students, _admins, _subjects
+                        **Note**:
+                        @_init_file() should be called to physically init a file in disk.
 
-        get_students: public method for getting all students basic information.
-        get_admins: public method for getting all admins basic information.
-        get_subjects: public method for getting all subjects information.
-        **Note**:   @_load_file() should be called to load data from data file in disk in all getter methods.
+        read_students:   public method for getting all students basic information.
+        read_subjects:   public method for getting all subjects information.
+                         **Note**:
+                         @_load_file() should be called to load data from data file in disk in all getter methods.
 
-        set_students: public method for saving students information to database file.
-        set_admins: public method for saving admins information to database file.
-        set_subjects: public method for saving a student's all subjects information to database file.
-        **Note**:   @_load_file() should be called to load data from data file in disk in all getter methods.
-                    @_overwrite_data should be called to physically saving data to data file in disk.
+        write_students:   public method for saving students information to database file.
+        write_subjects:   public method for saving a student's all subjects information to database file.
+                        **Note**:
+                        @_load_file() should be called to load data from data file in disk in all getter methods.
+                        @_overwrite_data should be called to physically saving data to data file in disk.
 
+        _load_data      load data from file to memory
+        _overwrite_data write data in memory into file
     """
 
     def __init__(self):
@@ -51,7 +53,7 @@ class Database:
         # project root path
         project_root = os.path.abspath(os.path.join(current_dir, '..'))
         # data file path
-        self._data_file_path = os.path.join(project_root, 'unidemo', 'student.data')
+        self._data_file_path = os.path.join(project_root, 'file', 'student.data')
 
         # init file
         self._init_file()
@@ -66,17 +68,17 @@ class Database:
             with open(self._data_file_path, 'w') as file:
                 file.write('')  # Write an empty file or add some initial content here
 
-    def get_students(self):
+    def read_students(self):
         # getter for _students
         self._load_data()
         return self._students
 
-    def get_admins(self):
+    def read_admins(self):
         # getter for _admins
         self._load_data()
         return self._admins
 
-    def get_subjects(self):
+    def read_subjects(self):
         # getter for _subjects
         self._load_data()
         return self._subjects

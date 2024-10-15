@@ -22,7 +22,7 @@ class AdminDao(AbsDao):
         :param staff_id:  staff_id
         :return: Admin
         """
-        admins = self._database.get_admins()
+        admins = self._database.read_admins()
         matching_admins = [admin for admin in admins if admin.get_staff_id() == staff_id]
         return matching_admins[0] if matching_admins else None
 
@@ -32,7 +32,7 @@ class AdminDao(AbsDao):
         :param staff_name: staff name
         :return: Admin
         """
-        admins = self._database.get_admins()
+        admins = self._database.read_admins()
         matching_admins = [admin for admin in admins if admin.get_staff_name() == staff_name]
         return matching_admins[0] if matching_admins else None
 

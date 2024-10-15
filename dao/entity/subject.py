@@ -23,6 +23,9 @@ class Subject:
             setter      for encapsulate the modification to all attributes.
                         **NOTE** for better understanding encapsulation,
                         please use traditional getter, don't use property to define getter
+        3. must include two method to convert between json string to object
+            to_dict     Converts the Student object to a dictionary representation, for json conversion
+            from_dict   Creates a Student object from a dictionary representation, for json conversion
     """
 
     def __init__(self, student_id, subject_id, subject_mark=None, subject_grade=None):

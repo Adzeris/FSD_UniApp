@@ -2,7 +2,7 @@ from typing import List
 
 from dao.entity.subject import Subject
 from dao.impl.abs_dao import AbsDao
-from util.exception import PrimaryKeyDuplicationException, UniqueKeyDuplicationException
+from util.exception import PrimaryKeyDuplicationException
 
 
 class SubjectDao(AbsDao):
@@ -35,7 +35,7 @@ class SubjectDao(AbsDao):
                                               subject_id=subject.get_subject_id())
 
         # 1: query subjects list
-        subjects = self._database.get_subjects()
+        subjects = self._database.read_subjects()
 
         # 2: check for none and duplicate entity
         if subjects:
@@ -55,7 +55,7 @@ class SubjectDao(AbsDao):
 
     def query_all_subjects(self):
         # 1: query all subject list
-        subjects = self._database.get_subjects()
+        subjects = self._database.read_subjects()
         # check if subjects list is empty
         return subjects if subjects else []
 
@@ -70,7 +70,7 @@ class SubjectDao(AbsDao):
         self.raise_dao_exception_if_any_empty(student_id=student_id)
 
         # 1: query all subject list
-        subjects = self._database.get_subjects()
+        subjects = self._database.read_subjects()
         # check if subjects list is empty
         if not subjects:
             return []
@@ -92,7 +92,7 @@ class SubjectDao(AbsDao):
         self.raise_dao_exception_if_any_empty(student_id=student_id, subject_id=subject_id)
 
         # 1: query all subject list
-        subjects = self._database.get_subjects()
+        subjects = self._database.read_subjects()
         # check if subjects list is empty
         if not subjects:
             return None
@@ -114,7 +114,7 @@ class SubjectDao(AbsDao):
         self.raise_dao_exception_if_any_empty(student_id=student_id, subject_id=subject_id)
 
         # 1: query all subjects
-        subjects = self._database.get_subjects()
+        subjects = self._database.read_subjects()
         # check if students list is empty
         if not subjects:
             return
@@ -136,7 +136,7 @@ class SubjectDao(AbsDao):
         self.raise_dao_exception_if_any_empty(student_id=student_id)
 
         # 1: query all subjects
-        subjects = self._database.get_subjects()
+        subjects = self._database.read_subjects()
         # check if students list is empty
         if not subjects:
             return
@@ -159,7 +159,7 @@ class SubjectDao(AbsDao):
         self.raise_dao_exception_if_any_empty(subject_id=subject.get_subject_id(), student_id=subject.get_student_id())
 
         # 1: query subjects
-        subjects = self._database.get_subjects()
+        subjects = self._database.read_subjects()
 
         # 2: remove subjects that should be deleted
         remain_subjects = [item for item in subjects if (item.get_student_id() != subject.get_student_id()

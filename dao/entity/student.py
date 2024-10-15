@@ -8,8 +8,6 @@ class Student:
         _student_name
         _student_email
         _student_password
-        _student_category
-        _subject_list
     Methods:
         1. must override following 4 methods.
             __init__    for definition a full parameters constructor
@@ -17,6 +15,7 @@ class Student:
             __eq__      override for comparison two object whether they are logically the same.
                         please ensure to use @__hash__ to compare two object value
             __hash__    override for definition hash value for each object, used in __eq__ method
+
         2. must include traditional setter and getter methods.
             getter      for encapsulate the access to all attributes.
                         **NOTE** for better understanding encapsulation,
@@ -24,6 +23,10 @@ class Student:
             setter      for encapsulate the modification to all attributes.
                         **NOTE** for better understanding encapsulation,
                         please use traditional getter, don't use property to define getter
+
+        3. must include two method to convert between json string to object
+            to_dict     Converts the Student object to a dictionary representation, for json conversion
+            from_dict   Creates a Student object from a dictionary representation, for json conversion
     """
 
     def __init__(self, student_id, student_name, student_email, student_password,
@@ -121,11 +124,37 @@ class Student:
         return hash(self._student_id)
 
     def to_dict(self):
-        return {"id": self._student_id, "name": self._student_name,
-                "email": self._student_email, "password": self._student_password,
-                "category": self._student_category}
+        """
+        Converts the Student object to a dictionary representation.
+
+        Returns:
+            dict: A dictionary containing the student's ID, name, email,
+                    password, and category.
+        """
+        return {
+            "id": self._student_id,
+            "name": self._student_name,
+            "email": self._student_email,
+            "password": self._student_password,
+            "category": self._student_category
+        }
 
     @classmethod
     def from_dict(cls, dict_data):
-        return cls(dict_data['id'], dict_data['name'], dict_data['email']
-                   , dict_data['password'], dict_data['category'])
+        """
+        Creates a Student object from a dictionary representation.
+
+        Args:
+            dict_data (dict): A dictionary containing the student's information
+                                with keys 'id', 'name', 'email', 'password', and 'category'.
+
+        Returns:
+            Student: An instance of the Student class populated with the provided data.
+        """
+        return cls(
+            dict_data['id'],
+            dict_data['name'],
+            dict_data['email'],
+            dict_data['password'],
+            dict_data['category']
+        )

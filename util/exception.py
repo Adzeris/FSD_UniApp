@@ -1,7 +1,5 @@
 class DataAccessException(Exception):
-    """
-    customised data access layer exception
-    """
+    """ customised data access layer exception """
     pass
 
 
@@ -22,7 +20,5 @@ class UniqueKeyDuplicationException(DataAccessException):
 
 
 class BusinessException(Exception):
-    """
-    customised service exception
-    """
+    """ customised service exception """
     pass

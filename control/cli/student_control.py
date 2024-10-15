@@ -1,9 +1,10 @@
 
 from service.student_service import StudentService
 from service.subject_service import SubjectService
-from util import util
+from util import validation
 from util.constant import Constant
-from util.util import input_cyan, print_green, print_red, print_yellow
+from util.print_util import PrintUtil
+from util.validation import Validation
 
 
 class StudentControl:
@@ -35,7 +36,7 @@ class StudentControl:
 
     @staticmethod
     def get_register_params_from_keyboard():
-        print_green("Student Sign Up")
+        PrintUtil.print_green("Student Sign Up")
         email = str(input("Email: "))
         password = str(input("Password: "))
 
@@ -43,7 +44,7 @@ class StudentControl:
 
     @staticmethod
     def get_login_params_from_keyboard():
-        print_green("Student Sign In")
+        PrintUtil.print_green("Student Sign In")
         email = str(input("Email: "))
         password = str(input("Password: "))
         return {"email": email, "password": password}
@@ -51,16 +52,16 @@ class StudentControl:
     def show_student_main_menu(self):
         while True:
             try:
-                option = str(input_cyan("Student System: (l/r/x) : ")).lower()
+                option = str(PrintUtil.input_cyan("Student System: (l/r/x) : ")).lower()
 
                 # call _student_service.login to log in for performing further operations
                 if option == 'l':
                     # upon logining, show student operation menu.
                     params = self.get_login_params_from_keyboard()
                     if self._student_service.check_register_params(params.get("email"), params.get("password")):
-                        print_yellow("email and password formats acceptable.")
+                        PrintUtil.print_yellow("email and password formats acceptable.")
                     else:
-                        print_red("Incorrect email and password format.")
+                        PrintUtil.print_red("Incorrect email and password format.")
                         continue
                     student = self._student_service.login(params.get("email"), params.get("password"))
                     if student:
@@ -70,11 +71,11 @@ class StudentControl:
                 elif option == 'r':
                     params = self.get_login_params_from_keyboard()
                     if self._student_service.check_register_params(params.get("email"), params.get("password")):
-                        print_yellow("email and password formats acceptable.")
+                        PrintUtil.print_yellow("email and password formats acceptable.")
                     else:
-                        print_red("Incorrect email and password format.")
+                        PrintUtil.print_red("Incorrect email and password format.")
                         continue
-                    name = str(input_cyan("Name: "))
+                    name = str(PrintUtil.input_cyan("Name: "))
                     self._student_service.register(params.get("email"), params.get("password"), name)
                     print("Enrolling Student " + name)
                 # navigate to University System Menu
@@ -86,49 +87,49 @@ class StudentControl:
                 else:
                     raise Exception("Incorrect input, please try again.")
             except Exception as e:
-                print_red(str(e))
+                PrintUtil.print_red(str(e))
 
     def _show_student_operation_menu(self):
         while True:
             try:
-                option = str(input_cyan("Student Course Menu: (c/e/r/s/x) : ")).lower()
+                option = str(PrintUtil.input_cyan("Student Course Menu: (c/e/r/s/x) : ")).lower()
 
                 # for changing student's password
                 # call _student_service.change_password
-                if option == 'c':
-                    print_yellow("Updating Password")
+                if option == Constant.S_CHANGE_PASSWORD:
+                    PrintUtil.print_yellow("Updating Password")
                     new_password = self.get_new_password_from_keyboard()
-                    if not util.check_password_pattern(new_password):
-                        print_red("Incorrect password format.")
+                    if not Validation.check_password_pattern(new_password):
+                        PrintUtil.print_red("Incorrect password format.")
                         continue
                     self._student_service.change_password(new_password)
 
                 # for subject enrollment
                 # call _subject_service.enroll_subject()
-                elif option == 'e':
+                elif option == Constant.S_ENROLLING:
                     res = self._subject_service.enroll_subject()
-                    print_yellow(f"Enrolling in Subject-{res.get(Constant.KEY_SUBJECT_ID)}.")
-                    print_yellow(f"You are now enrolled in {res.get(Constant.KEY_COUNT)} out of 4 subjects")
+                    PrintUtil.print_yellow(f"Enrolling in Subject-{res.get(Constant.KEY_SUBJECT_ID)}.")
+                    PrintUtil.print_yellow(f"You are now enrolled in {res.get(Constant.KEY_COUNT)} out of 4 subjects")
 
                 # for removing subject enrollment
                 # call _subject_service.remove_subject()
-                elif option == 'r':
-                    subject_id = str(input_cyan("Remove Subject By ID: "))
+                elif option == Constant.S_REMOVING:
+                    subject_id = str(PrintUtil.input_cyan("Remove Subject By ID: "))
                     res = self._subject_service.remove_subject(subject_id)
-                    print_yellow(f"Dropping Subject-{res.get(Constant.KEY_SUBJECT_ID)}.")
-                    print_yellow(f"You are now enrolled in {res.get(Constant.KEY_COUNT)} out of 4 subjects")
+                    PrintUtil.print_yellow(f"Dropping Subject-{res.get(Constant.KEY_SUBJECT_ID)}.")
+                    PrintUtil.print_yellow(f"You are now enrolled in {res.get(Constant.KEY_COUNT)} out of 4 subjects")
 
                 # for showing enrolled subjects
                 # call _subject_service.show_subjects()
-                elif option == 's':
+                elif option == Constant.S_SHOW:
                     subjects = self._subject_service.query_subjects()
-                    print_yellow(f"Showing {len(subjects)} subjects")
+                    PrintUtil.print_yellow(f"Showing {len(subjects)} subjects")
                     if subjects:
                         for subject in subjects:
                             print(str(subject))
 
                 # for navigating to parent menu
-                elif option == 'x':
+                elif option == Constant.EXIT:
                     break
 
                 # incorrect input, loop continue

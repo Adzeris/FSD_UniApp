@@ -4,9 +4,9 @@ from typing import List
 from dao.entity.student import Student
 from dao.entity.subject import Subject
 from dao.impl.subject_dao import SubjectDao
-from util import util
 from util.constant import Constant
 from util.exception import BusinessException
+from util.serialization import Serialization
 
 
 class SubjectService:
@@ -122,10 +122,10 @@ class SubjectService:
         self._subject_dao.update_subject(subject)
 
     def simulate_select_subject(self) -> str:
-        subject_id = util.generate_random_subject()
+        subject_id = Serialization.generate_random_subject_id()
         while True:
             if not self._subject_dao.query_subject_by_student_and_subject(self.get_student().get_student_id(),
                                                                           subject_id):
                 break
-            subject_id = util.generate_random_subject()
+            subject_id = Serialization.generate_random_subject_id()
         return subject_id

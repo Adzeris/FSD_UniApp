@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Run CLI",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}\\control\\cli\\cli_uni_app.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }, 
+        {
+            "name": "Run GUI",
+            "request": "launch",
+            "type": "python",
+            "program": "${workspaceFolder}\\control\\gui\\gui_uni_app.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}

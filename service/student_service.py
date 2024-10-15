@@ -1,7 +1,9 @@
 from dao.entity.student import Student
 from dao.impl.student_dao import StudentDao
-from util import util
+from util.encryption import Encryption
 from util.exception import BusinessException
+from util.serialization import Serialization
+from util.validation import Validation
 
 
 class StudentService:
@@ -46,11 +48,19 @@ class StudentService:
             raise BusinessException("Student does not exist.")
 
         # 2: encode password of parameter, and then compare the encryption
-        password_encryption = util.encode_md5(password)
+        password_encryption = Encryption.encode_md5(password)
         if password_encryption != student.get_student_password():
             raise BusinessException("Email or password error.")
 
         return student
+
+    @staticmethod
+    def get_prefix_from_email(email):
+        if '@' in email:
+            prefix, domain = email.split('@', 1)
+            return prefix
+        else:
+            return None
 
     def register(self, email, password, name):
         """
@@ -64,7 +74,7 @@ class StudentService:
         # 1: check whether student exists or not ( eq: check if email exists )
         #    should invoke _student_dao.query_student_by_email to check whether the input email exists.
         if self._student_dao.query_student_by_email(email):
-            raise BusinessException("Student " + util.get_prefix_from_email(email) + " already exists.")
+            raise BusinessException("Student " + self.get_prefix_from_email(email) + " already exists.")
 
         # 2: build student object
         # 2.1: using student's constructor with parameters of student_id, student_name, student_email, student_password
@@ -75,7 +85,7 @@ class StudentService:
         # 2.4: encode password
 
         student_id = self.generate_student_unique_id()
-        password_encryption = util.encode_md5(password)
+        password_encryption = Encryption.encode_md5(password)
         student = Student(student_id, name, email, password_encryption)
 
         # 3: invoking _student_dao.add_student to saving a new student.
@@ -90,8 +100,8 @@ class StudentService:
             raise BusinessException("Please login in first.")
 
         # 2: encode password of parameter, and then compare the encryption
-        #    call @Util.encode_md5 to get encrypted string
-        new_password_encryption = util.encode_md5(new_password)
+        #    call @Encryption.encode_md5 to get encrypted string
+        new_password_encryption = Encryption.encode_md5(new_password)
 
         # 2: update data to database file
         student = self._student_dao.query_student_info_by_id(self.get_student().get_student_id())
@@ -101,16 +111,16 @@ class StudentService:
     @staticmethod
     def check_register_params(email, password) -> bool:
         # 1: check parameters to find whether they meet the pattern requirements.
-        #   please call Util.check_email_pattern to check whether email is valid.
-        #   please call Util.check_password_pattern to check whether password is valid
-        ret1 = util.check_email_pattern(email)
-        ret2 = util.check_password_pattern(password)
+        #   please call Validation.check_email_pattern to check whether email is valid.
+        #   please call Validation.check_password_pattern to check whether password is valid
+        ret1 = Validation.check_email_pattern(email)
+        ret2 = Validation.check_password_pattern(password)
 
         # 2 encapsulate result of combination of ret1 and ret2
         return ret1 and ret2
 
     def generate_student_unique_id(self):
         while True:
-            student_id = util.generate_random_6_digit_number()
+            student_id = Serialization.generate_random_6_digit_number()
             if not self._student_dao.query_student_info_by_id(student_id):
                 return student_id
